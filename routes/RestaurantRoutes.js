@@ -30,6 +30,10 @@ module.exports = (options) => {
       RestaurantController.index)
     .post(
       // TODO: Add needed middlewares
+      middlewares.isLoggedIn,
+      middlewares.hasRole('Owner'),
+      upload,
+      RestaurantValidation.create(),
       RestaurantController.create)
 
   app.route('/restaurants/:restaurantId')
@@ -42,12 +46,18 @@ module.exports = (options) => {
       RestaurantValidation.update(),
       RestaurantController.update)
     .delete(
+      middlewares.isLoggedIn,
+      middlewares.hasRole('Owner'),
+      middlewares.checkRestaurantOwnership,
       // TODO: Add needed middlewares
       RestaurantController.destroy)
 
   app.route('/restaurants/:restaurantId/orders')
     .get(
       // TODO: Add needed middlewares
+      middlewares.isLoggedIn,
+      middlewares.hasRole('Owner'),
+      middlewares.checkRestaurantOwnership,
       OrderController.indexRestaurant)
 
   app.route('/restaurants/:restaurantId/products')
@@ -57,5 +67,8 @@ module.exports = (options) => {
   app.route('/restaurants/:restaurantId/analytics')
     .get(
       // TODO: Add needed middlewares
+      middlewares.isLoggedIn,
+      middlewares.hasRole('Owner'),
+      middlewares.checkRestaurantOwnership,
       OrderController.analytics)
 }
